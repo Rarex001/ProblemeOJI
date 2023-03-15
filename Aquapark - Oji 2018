@@ -1,0 +1,85 @@
+/// Sursa de 75 de puncte
+
+#include <fstream>
+#include <vector>
+using namespace std;
+
+const int nmax = 2e5 + 7;
+const int mod = 666013;
+vector<pair<int,int>>edges;
+
+ifstream cin("aquapark.in");
+ofstream cout("aquapark.out");
+
+long long viz[nmax];
+
+bool intersect(long long i,long long j)
+{
+    long long a,b,c,d;
+    a = min(edges[i].first, edges[i].second);
+    b = max(edges[i].first, edges[i].second);
+    c = min(edges[j].first, edges[j].second);
+    d = max(edges[j].first, edges[j].second);
+    if((a < c && c < b && b < d) || (c < a && a < d && d < b))
+        return true;
+    return false;
+}
+
+long long lg_put(long long a,long long b)
+{
+    long long p = 1;
+    while(b)
+    {
+        if(b % 2 == 0)
+        {
+            a = (long long)(a * a) % mod;
+            b = b / 2;
+        }
+        else
+        {
+            p = (long long) (p * a) % mod;
+            b--;
+        }
+    }
+    return p;
+}
+
+void dfs(int node,int c)
+{
+    viz[node] = c;
+    for(int next = 0; next < edges.size(); next++)
+    {
+        if(node != next && viz[next] == 0 && intersect(node, next))
+        {
+            if(c == 1)
+                dfs(next, 2);
+            else
+                dfs(next, 1);
+        }
+    }
+}
+
+int main()
+{
+    long long cer,n,m,cc = 0;
+    cin >> cer >> n >> m;
+    for(long long i=1; i<=m; i++)
+    {
+        long long x, y;
+        cin >> x >> y;
+        edges.push_back({x,y});
+    }
+    for(long long i=0; i<m; i++)
+    {
+        if(viz[i] == 0)
+        {
+            dfs(i,1);
+            cc++;
+        }
+        if(cer == 1)
+            cout << edges[i].first << " " << edges[i].second << " " << viz[i] << '\n';
+    }
+    if(cer == 2)
+        cout << lg_put(2, cc);
+    return 0;
+}
