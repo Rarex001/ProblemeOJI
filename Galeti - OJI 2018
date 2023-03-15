@@ -1,0 +1,31 @@
+#include <fstream>
+
+using namespace std;
+
+ifstream cin("galeti.in");
+ofstream cout("galeti.out");
+
+void solve(long long st,long long dr,long long e)
+{
+    long long n = dr - st + 1;
+    if(st == dr)
+        return;
+    if(e <= 2 * n - 3)
+    {
+        solve(st, dr - 1,e - 1);
+        cout << dr << " " << st << '\n';
+    }
+    else
+    {
+        solve(st + 1, dr, e - n + 1);
+        cout << st + 1 << " " << st << '\n';
+    }
+}
+
+int main()
+{
+    long long n, e;
+    cin >> n >> e;
+    solve(1, n, e+1);
+    return 0;
+}
